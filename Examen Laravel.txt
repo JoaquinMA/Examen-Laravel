@@ -1,0 +1,77 @@
+1. Crear un proyecto usando laravel con el nombre “service_control”.
+composer create-project --prefer-dist laravel/laravel service_control
+
+2. Crear una base de datos (MySQL) con el nombre “service_control”.
+create database service_control;
+
+3. Crear una tabla llamada services con la siguiente estructura (Utilizando
+migraciones laravel):
+- id (primary_key, autoincrement)
+- user_id (foreign_key relación con tabla usuarios)
+- name (string)
+- status (int(1), default 1)
+- created_at
+- updated_at
+
+php artisan make:migration create_usuarios_table --create=usuarios
+
+  $table->increments('id');
+  $table->string('name');
+  $table->timestamps();
+
+php artisan make:migration create_services_table --create=services
+
+  $table->increments('id');
+  $table->integer('user_id')->unsigned();
+  $table->string('name');
+  $table->boolean('status')->default(1);
+  $table->timestamps();
+
+  $table->foreign('user_id')->references('id')->on('usuarios');
+
+php artisan migrate
+
+4. Crear una tabla llamada roles con la siguiente estructura (Utilizando
+migraciones laravel):
+- id (primary_key, autoincrement)
+- rol
+
+php artisan make:migration create_roles_table --create=roles
+
+  $table->increments('id');
+  $table->string('rol');
+  $table->timestamps();
+
+php artisan migrate
+
+5. Agregar los roles: admin y user a la tabla de roles.
+
+insert into roles values(1, 'admin', NOW(), NOW());
+insert into roles(rol, created_at, updated_at) values('user', NOW(), NOW());
+
+*6. Crear registro/login para usuarios.
+
+7. Agregar campos age, gender y rol (relacionado con la tabla roles) a la tabla
+usuarios (Utilizando migraciones).
+
+php artisan make:migration add_age_to_usuarios_table --table=usuarios
+
+$table->integer('age');
+
+php artisan make:migration add_gender_to_usuarios_table --table=usuarios
+
+$table->string('gender');
+
+php artisan make:migration add_rol_to_usuarios_table --table=usuarios
+
+$table->integer('rol_id')->unsigned()->default(2); //1 = admin, 2 = user
+$table->foreign('rol_id')->references('id')->on('roles');
+
+php artisan migrate
+
+*8. Cuando un usuario se registre, por default debe tener el rol “user” y debe
+permitir agregar los campos age y gender.
+
+9. Crear los modelos de las tablas (Rol y Service) con sus respectivas relaciones.
+
+
